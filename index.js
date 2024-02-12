@@ -1,4 +1,3 @@
-import express from 'express'
 // const express = require('express')
 
 /* HTTP Methods: 
@@ -14,31 +13,35 @@ delete:
 // app.get() is for the whole application
 // for more specificity, make use of router.get()
 // to specify what you're using, make use of app.use()
+
+import express from 'express'
+import path from 'path'
+
 const app = express()
 const router = express.Router()
-app.use(router)
+app.use(
+    router,
+    express.static('./static')
+)
 const port = ++process.env.PORT || 4000
 
 // routers: express
 router.get('^/$|/express', display, (req, res) =>{
-    res.json({
-        status: res.statusCode,
-        msg: "You're home"
-    })
-})
-app.get('/', (req, res) =>{
 // redirects to the home page.
+    res.status(200).sendFile(path.resolve('./static/html/index.html'))
+})
+router.get('/about', (req, res) =>{
     res.json({
         status: res.statusCode,
         msg: "About Page"
     })
 })
-app.all('*', (req, res) =>{
-    res.json({
-        status: 404,
-        msg: "Error 404"
-    })
-})
+
+// middleware
+function display(req, res, next) {
+    console.log("Hello there!");
+    next()
+}
 
 app.listen(port)
 
@@ -68,14 +71,12 @@ catches and deals with errors that happen while requests are being processed. It
 
 */
 
-function display(req, res, next) {
-    console.log("Hello there!");
-    next()
-}
 
 /*
 - router middleware
-- static file
+
+- static file: allows the user to access specific files (html, css and images)
+
 - class
 - MVC (Model View Controller)
 */
